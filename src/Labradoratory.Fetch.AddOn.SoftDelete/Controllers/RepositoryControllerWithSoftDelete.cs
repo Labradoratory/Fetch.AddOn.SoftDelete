@@ -32,7 +32,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <seealso cref="EntityRepositoryController{TEntity, TEntity}" />
-    public abstract class RepositoryControllerWithSoftDelete<TEntity, TView> : EntityRepositoryController<TEntity, TView>
+    public abstract class RepositoryControllerWithSoftDelete<TEntity, TView> : RepositoryController<TEntity, TView>
         where TEntity : Entity, ISoftDeletable
         where TView: class
     {
