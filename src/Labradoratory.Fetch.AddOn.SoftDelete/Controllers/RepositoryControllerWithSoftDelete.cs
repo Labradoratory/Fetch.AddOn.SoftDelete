@@ -44,6 +44,12 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
         {
         }
 
+        /// <summary>
+        /// Filters the <see cref="RepositoryController{TEntity, TView}.GetAll(CancellationToken)"/> request
+        /// to return only those <see cref="Entity"/> objects where <see cref="ISoftDeletable.IsDeleted"/> is true.
+        /// </summary>
+        /// <param name="query">The query to filter.</param>
+        /// <returns>The filtered query.</returns>
         protected override IQueryable<TEntity> FilterGetAll(IQueryable<TEntity> query)
         {
             // The GetAll method should only return entities that are NOT deleted.
@@ -53,12 +59,12 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
         [HttpGet, Route("deleted")]
         public virtual async Task<ActionResult<List<TEntity>>> GetDeleted(CancellationToken cancellationToken)
         {
-            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, typeof(TEntity), EntityAuthorizationPolicies.GetAllDeleted);
+            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, typeof(TEntity), EntityAuthorizationPolicies.GetAllDeleted.ForType<TEntity>());
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
-            var entities = await Repository.GetAsyncQueryResolver(FilterGetAll).ToListAsync(cancellationToken);
-            authorizationResult = await AuthorizationService.AuthorizeAsync(User, entities, EntityAuthorizationPolicies.GetSomeDeleted);
+            var entities = await Repository.GetAsyncQueryResolver(query => query.GetDeleted()).ToListAsync(cancellationToken);
+            authorizationResult = await AuthorizationService.AuthorizeAsync(User, entities, EntityAuthorizationPolicies.GetSomeDeleted.ForType<TEntity>());
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
@@ -76,7 +82,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             if (entity.IsDeleted)
                 return Ok();
 
-            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, entity, EntityAuthorizationPolicies.SoftDelete);
+            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, entity, EntityAuthorizationPolicies.SoftDelete.ForType<TEntity>());
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
@@ -102,7 +108,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             if (!entity.IsDeleted)
                 return Ok();
 
-            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, entity, EntityAuthorizationPolicies.SoftDelete);
+            var authorizationResult = await AuthorizationService.AuthorizeAsync(User, entity, EntityAuthorizationPolicies.SoftDelete.ForType<TEntity>());
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 

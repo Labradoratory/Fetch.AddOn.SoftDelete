@@ -2,10 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Description>An add-on for the Fetch repository that includes the ability to soft delete entities.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>2019</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Labradoratory/Fetch.AddOn.SoftDelete</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>Fetch Soft Delete IsDeleted</PackageTags>
+    <Authors>Ed Downs</Authors>
+    <Company>Labradoratory</Company>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Labradoratory.Fetch" Version="1.0.0-beta.6" />
+    <PackageReference Include="Labradoratory.Fetch" Version="1.0.0-beta.9" />
   </ItemGroup>
 
 </Project>
