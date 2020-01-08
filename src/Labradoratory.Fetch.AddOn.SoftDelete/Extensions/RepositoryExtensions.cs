@@ -12,7 +12,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Extensions
             CancellationToken cancellationToken)
             where TEntity : Entity, ISoftDeletable
         {
-            if (repository is RepositoryWithSoftDelete<TEntity> sdr)
+            if (repository is SoftDeleteRepositoryActions<TEntity> sdr)
                 return sdr.SoftDeleteAsync(entity, cancellationToken);
 
             throw new InvalidOperationException(
@@ -28,7 +28,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Extensions
             if (!entity.IsDeleted)
                 return Task.CompletedTask;
 
-            if (repository is RepositoryWithSoftDelete<TEntity> sdr)
+            if (repository is SoftDeleteRepositoryActions<TEntity> sdr)
                 return sdr.RestoreSoftDeletedAsync(entity, cancellationToken);
 
             throw new InvalidOperationException(

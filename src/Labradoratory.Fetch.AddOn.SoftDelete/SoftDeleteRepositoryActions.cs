@@ -1,27 +1,42 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Labradoratory.Fetch.ChangeTracking;
 using Labradoratory.Fetch.Processors;
 using Labradoratory.Fetch.Processors.DataPackages;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Labradoratory.Fetch.AddOn.SoftDelete
 {
     /// <summary>
-    /// The base implementation of an repository used to access data that also support soft deletion.  
+    /// Defines the soft delete related <see cref="Repository{TEntity}"/> members.
+    /// This class can be used to quickly implement the soft delete actions.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity the accessor supports.</typeparam>
-    /// <seealso cref="Repository{TEntity}" />
-    /// <seealso cref="ProcessorPipeline"/>
-    public abstract class RepositoryWithSoftDelete<TEntity> : Repository<TEntity>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    public class SoftDeleteRepositoryActions<TEntity> : ISoftDeletableRepositoryExtentions<TEntity>
         where TEntity : Entity, ISoftDeletable
     {
-        protected RepositoryWithSoftDelete(ProcessorPipeline processorPipeline)
-            : base(processorPipeline)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SoftDeleteRepositoryActions{TEntity}"/> class.
+        /// </summary>
+        /// <param name="processorPipeline">The processor pipeline.</param>
+        /// <param name="executeUpdateAsync">The execute update function.  This is called to commit changes.</param>
+        public SoftDeleteRepositoryActions(
+            ProcessorPipeline processorPipeline,
+            Func<TEntity, ChangeSet, CancellationToken, Task> executeUpdateAsync)
         {
+            ProcessorPipeline = processorPipeline;
+            ExecuteUpdateAsync = executeUpdateAsync;
         }
+
+        /// <summary>
+        /// Gets the processor pipeline.
+        /// </summary>
+        protected ProcessorPipeline ProcessorPipeline { get; }
+
+        /// <summary>
+        /// Gets the execute update action.
+        /// </summary>
+        protected Func<TEntity, ChangeSet, CancellationToken, Task> ExecuteUpdateAsync { get; }
 
         public virtual async Task SoftDeleteAsync(TEntity entity, CancellationToken cancellationToken)
         {
