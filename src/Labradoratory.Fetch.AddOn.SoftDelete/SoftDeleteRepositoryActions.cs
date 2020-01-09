@@ -44,7 +44,12 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete
             await ProcessorPipeline.ProcessAsync(softDeletingPackage, cancellationToken);
 
             entity.IsDeleted = true;
-            var changes = entity.CommitChanges();
+            // NOTE: We don't rely on the IsDeleted property participating in change tracking.
+            // In fact, it is recommended that it doesn't so that it can't be change via an direct Update.
+            var changes = new ChangeSet
+            {
+                { "IsDeleted", new ChangeValue { Action = ChangeAction.Update, Target = ChangeTarget.Object, OldValue = false, NewValue = true } }
+            };
             await ExecuteUpdateAsync(entity, changes, cancellationToken);
 
             var softDeletedPackage = new EntitySoftDeletedPackage<TEntity>(entity);
