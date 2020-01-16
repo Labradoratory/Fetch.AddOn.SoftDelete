@@ -48,7 +48,10 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete
             // In fact, it is recommended that it doesn't so that it can't be change via an direct Update.
             var changes = new ChangeSet
             {
-                { "IsDeleted", new ChangeValue { Action = ChangeAction.Update, Target = ChangeTarget.Object, OldValue = false, NewValue = true } }
+                {
+                    ChangePath.Create(nameof(ISoftDeletable.IsDeleted)), 
+                    new ChangeValue { Action = ChangeAction.Update, Target = ChangeTarget.Object, OldValue = false, NewValue = true } 
+                }
             };
             await ExecuteUpdateAsync(entity, changes, cancellationToken);
 
