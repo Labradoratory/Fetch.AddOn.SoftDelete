@@ -7,7 +7,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Processors.DataPackages
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <seealso cref="DataPackage" />
-    public class EntitySoftDeletedPackage<TEntity> : BaseEntityDataPackage<TEntity>
+    public class EntitySoftDeletedPackage<TEntity> : EntityDeletedPackage<TEntity>
         where TEntity : Entity, ISoftDeletable
     {
         /// <summary>
