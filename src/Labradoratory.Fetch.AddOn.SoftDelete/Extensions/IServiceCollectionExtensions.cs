@@ -1,5 +1,5 @@
-﻿using Labradoratory.Fetch.Processors;
-using Labradoratory.Fetch.Processors.DataPackages;
+﻿using Labradoratory.Fetch.AddOn.SoftDelete.Processors.DataPackages;
+using Labradoratory.Fetch.Processors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Labradoratory.Fetch.AddOn.SoftDelete.Extensions

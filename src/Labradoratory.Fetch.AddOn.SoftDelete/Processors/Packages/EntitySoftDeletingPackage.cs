@@ -1,6 +1,6 @@
-﻿using Labradoratory.Fetch.AddOn.SoftDelete;
+﻿using Labradoratory.Fetch.Processors.DataPackages;
 
-namespace Labradoratory.Fetch.Processors.DataPackages
+namespace Labradoratory.Fetch.AddOn.SoftDelete.Processors.DataPackages
 {
     /// <summary>
     /// The data related a <typeparamref name="TEntity"/> that is being soft deleted.
