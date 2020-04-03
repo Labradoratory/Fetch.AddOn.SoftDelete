@@ -46,7 +46,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
 
         /// <summary>
         /// Filters the <see cref="RepositoryController{TEntity, TView}.GetAll(CancellationToken)"/> request
-        /// to return only those <see cref="Entity"/> objects where <see cref="ISoftDeletable.IsDeleted"/> is true.
+        /// to return only those <see cref="Entity"/> objects where <see cref="ISoftDeletable.IsDeleted"/> is false.
         /// </summary>
         /// <param name="query">The query to filter.</param>
         /// <returns>The filtered query.</returns>
@@ -56,6 +56,17 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             return query.GetNotDeleted();
         }
 
+        /// <summary>
+        /// Filters the <see cref="RepositoryController{TEntity, TView}.GetAll(CancellationToken)"/> request
+        /// to return only those <see cref="Entity"/> objects where <see cref="ISoftDeletable.IsDeleted"/> is true.
+        /// </summary>
+        /// <param name="query">The query to filter.</param>
+        /// <returns>The filtered query.</returns>
+        protected virtual IQueryable<TEntity> FilterGetAllDeleted(IQueryable<TEntity> query)
+        {
+            return query.GetDeleted();
+        }
+
         [HttpGet, Route("deleted")]
         public virtual async Task<ActionResult<List<TEntity>>> GetDeleted(CancellationToken cancellationToken)
         {
@@ -63,7 +74,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
-            var entities = await Repository.GetAsyncQueryResolver(query => query.GetDeleted()).ToListAsync(cancellationToken);
+            var entities = await Repository.GetAsyncQueryResolver(FilterGetAllDeleted).ToListAsync(cancellationToken);
             authorizationResult = await AuthorizationService.AuthorizeAsync(User, entities, EntityAuthorizationPolicies.GetSomeDeleted.ForType<TEntity>());
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
