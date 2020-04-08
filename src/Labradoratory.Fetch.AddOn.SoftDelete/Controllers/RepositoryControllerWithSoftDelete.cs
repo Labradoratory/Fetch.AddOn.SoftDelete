@@ -74,7 +74,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
-            var entities = await Repository.GetAsyncQueryResolver(FilterGetAllDeleted).ToListAsync(cancellationToken);
+            var entities = await (await GetRepositoryAsync()).GetAsyncQueryResolver(FilterGetAllDeleted).ToListAsync(cancellationToken);
             authorizationResult = await AuthorizationService.AuthorizeAsync(User, entities, EntityAuthorizationPolicies.GetSomeDeleted.ForType<TEntity>());
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
@@ -85,8 +85,9 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
         /// <inheritdoc />
         public override async Task<IActionResult> Delete(string encodedKeys, CancellationToken cancellationToken)
         {
+            var repository = await GetRepositoryAsync();
             var keys = Entity.DecodeKeys<TEntity>(encodedKeys);
-            var entity = await Repository.FindAsync(keys, cancellationToken);
+            var entity = await repository.FindAsync(keys, cancellationToken);
             if (entity == null)
                 return NotFound();
 
@@ -97,7 +98,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
-            await Repository.SoftDeleteAsync(entity, cancellationToken);
+            await repository.SoftDeleteAsync(entity, cancellationToken);
 
             return Ok();
         }
@@ -111,8 +112,9 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
         [HttpPut, Route("{encodedKeys}/restore")]
         public virtual async Task<IActionResult> RestoreSoftDeleted(string encodedKeys, CancellationToken cancellationToken)
         {
+            var repository = await GetRepositoryAsync();
             var keys = Entity.DecodeKeys<TEntity>(encodedKeys);
-            var entity = await Repository.FindAsync(keys, cancellationToken);
+            var entity = await repository.FindAsync(keys, cancellationToken);
             if (entity == null)
                 return NotFound();
 
@@ -123,7 +125,7 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
-            await Repository.RestoreSoftDeletedAsync(entity, cancellationToken);
+            await repository.RestoreSoftDeletedAsync(entity, cancellationToken);
 
             return Ok();
         }
