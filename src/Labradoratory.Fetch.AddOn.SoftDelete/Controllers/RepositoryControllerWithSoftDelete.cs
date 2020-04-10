@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,13 +19,19 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
     public abstract class RepositoryControllerWithSoftDelete<TEntity> : RepositoryControllerWithSoftDelete<TEntity, TEntity>
         where TEntity : Entity, ISoftDeletable
     {
-        public RepositoryControllerWithSoftDelete(
+        protected RepositoryControllerWithSoftDelete(
             Repository<TEntity> repository,
             IMapper mapper,
             IAuthorizationService authorizationService)
             : base(repository, mapper, authorizationService)
-        {
-        }
+        { }
+
+        protected RepositoryControllerWithSoftDelete(
+            Func<Task<Repository<TEntity>>> getRepositoryAsync,
+            IMapper mapper,
+            IAuthorizationService authorizationService)
+            : base(getRepositoryAsync, mapper, authorizationService)
+        { }
     }
 
     /// <summary>
@@ -36,13 +43,19 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
         where TEntity : Entity, ISoftDeletable
         where TView: class
     {
-        public RepositoryControllerWithSoftDelete(
+        protected RepositoryControllerWithSoftDelete(
             Repository<TEntity> repository,
             IMapper mapper, 
             IAuthorizationService authorizationService)
             : base(repository, mapper, authorizationService)
-        {
-        }
+        {}
+
+        protected RepositoryControllerWithSoftDelete(
+            Func<Task<Repository<TEntity>>> getRepositoryAsync,
+            IMapper mapper,
+            IAuthorizationService authorizationService)
+            : base(getRepositoryAsync, mapper, authorizationService)
+        {}
 
         /// <summary>
         /// Filters the <see cref="RepositoryController{TEntity, TView}.GetAll(CancellationToken)"/> request
