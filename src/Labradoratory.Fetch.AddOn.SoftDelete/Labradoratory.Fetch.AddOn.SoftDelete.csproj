@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <IsPackable>true</IsPackable>
     <Description>An add-on for the Fetch repository that includes the ability to soft delete entities.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Labradoratory.Fetch" Version="2.0.0-beta.4" />
+    <PackageReference Include="Labradoratory.Fetch" Version="2.0.1" />
   </ItemGroup>
 
 </Project>
