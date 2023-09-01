@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Labradoratory.Fetch.AddOn.SoftDelete.Authorization;
 using Labradoratory.Fetch.AddOn.SoftDelete.Extensions;
 using Labradoratory.Fetch.Controllers;
+using Labradoratory.Fetch.Mapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,16 +21,16 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
     {
         protected RepositoryControllerWithSoftDelete(
             Repository<TEntity> repository,
-            IMapper mapper,
+            IMapperProvider mapperProvider,
             IAuthorizationService authorizationService)
-            : base(repository, mapper, authorizationService)
+            : base(repository, mapperProvider, authorizationService)
         { }
 
         protected RepositoryControllerWithSoftDelete(
             Func<Task<Repository<TEntity>>> getRepositoryAsync,
-            IMapper mapper,
+            IMapperProvider mapperProvider,
             IAuthorizationService authorizationService)
-            : base(getRepositoryAsync, mapper, authorizationService)
+            : base(getRepositoryAsync, mapperProvider, authorizationService)
         { }
     }
 
@@ -45,16 +45,16 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
     {
         protected RepositoryControllerWithSoftDelete(
             Repository<TEntity> repository,
-            IMapper mapper, 
+            IMapperProvider mapperProvider, 
             IAuthorizationService authorizationService)
-            : base(repository, mapper, authorizationService)
+            : base(repository, mapperProvider, authorizationService)
         {}
 
         protected RepositoryControllerWithSoftDelete(
             Func<Task<Repository<TEntity>>> getRepositoryAsync,
-            IMapper mapper,
+            IMapperProvider mapperProvider,
             IAuthorizationService authorizationService)
-            : base(getRepositoryAsync, mapper, authorizationService)
+            : base(getRepositoryAsync, mapperProvider, authorizationService)
         {}
 
         /// <summary>
@@ -92,7 +92,8 @@ namespace Labradoratory.Fetch.AddOn.SoftDelete.Controllers
             if (!authorizationResult.Succeeded)
                 return AuthorizationFailed(authorizationResult);
 
-            return Ok(Mapper.Map<IEnumerable<TView>>(entities));
+            var mapper = MapperProvider.GetMapper<TEntity, TView>();
+            return Ok(mapper.MapMany(entities));
         }
 
         /// <inheritdoc />
